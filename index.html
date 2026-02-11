@@ -131,7 +131,60 @@ function darBaixa(botao) {
             alert("Quantidade menor que o pedido. Voltou para reposição.");
         }
     }
+}<script>
+let id = 0;
+
+function novoPedido() {
+    const nome = prompt("Nome do pedido:");
+    const tamanho = prompt("Tamanho da peça:");
+    const data = prompt("Data do pedido (ex: 11/02/2026):");
+    const quantidade = parseInt(prompt("Quantidade solicitada:"));
+
+    if (!nome || !tamanho || !data || !quantidade) return;
+
+    const card = criarCard(nome, tamanho, data, quantidade);
+    document.getElementById("pedidos").appendChild(card);
 }
+
+function criarCard(nome, tamanho, data, quantidade) {
+    id++;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.quantidade = quantidade;
+
+    card.innerHTML = `
+        <strong>${nome}</strong><br>
+        Tamanho: ${tamanho}<br>
+        Data: ${data}<br>
+        Pedido: ${quantidade}<br>
+        <button onclick="darBaixa(this)">Dar Baixa</button>
+    `;
+
+    return card;
+}
+
+function darBaixa(botao) {
+    const card = botao.parentElement;
+    const quantidadePedido = parseInt(card.dataset.quantidade);
+    const quantidadeProduzida = parseInt(prompt("Quantidade produzida:"));
+
+    if (!quantidadeProduzida) return;
+
+    if (card.parentElement.id === "pedidos") {
+        document.getElementById("qualidade").appendChild(card);
+    } else if (card.parentElement.id === "qualidade") {
+
+        if (quantidadeProduzida >= quantidadePedido) {
+            document.getElementById("fundicao").appendChild(card);
+        } else {
+            card.classList.add("red");
+            document.getElementById("pedidos").appendChild(card);
+            alert("Quantidade menor que o pedido. Voltou para reposição.");
+        }
+    }
+}
+</script>
+
 </script>
 
 </body>
