@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Controle de Produção</title>
+<style>
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
 
+h1 {
+    text-align: center;
+}
+
+.board {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.column {
+    background: white;
+    padding: 15px;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.column h2 {
+    text-align: center;
+}
+
+.card {
+    background: #e9e9e9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.card.red {
+    background: #ffb3b3;
+}
+
+button {
+    padding: 10px;
+    margin-top: 5px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.new-order {
+    background: green;
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>Controle de Produção</h1>
+
+<button class="new-order" onclick="novoPedido()">NOVO PEDIDO</button>
+
+<div class="board">
+    <div class="column">
+        <h2>Pedidos</h2>
+        <div id="pedidos"></div>
+    </div>
+
+    <div class="column">
+        <h2>Controle de Qualidade</h2>
+        <div id="qualidade"></div>
+    </div>
+
+    <div class="column">
+        <h2>Fundição</h2>
+        <div id="fundicao"></div>
+    </div>
+</div>
+
+<script>
+let id = 0;
+
+function novoPedido() {
+    const nome = prompt("Nome do pedido:");
+    const quantidade = parseInt(prompt("Quantidade solicitada:"));
+
+    if (!nome || !quantidade) return;
+
+    const card = criarCard(nome, quantidade);
+    document.getElementById("pedidos").appendChild(card);
+}
+
+function criarCard(nome, quantidade) {
+    id++;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.quantidade = quantidade;
+    card.dataset.nome = nome;
+    card.innerHTML = `
+        <strong>${nome}</strong><br>
+        Pedido: ${quantidade}<br>
+        <button onclick="darBaixa(this)">Dar Baixa</button>
+    `;
+    return card;
+}
+
+function darBaixa(botao) {
+    const card = botao.parentElement;
+    const quantidadePedido = parseInt(card.dataset.quantidade);
+    const quantidadeProduzida = parseInt(prompt("Quantidade produzida:"));
+
+    if (!quantidadeProduzida) return;
+
+    if (card.parentElement.id === "pedidos") {
+        document.getElementById("qualidade").appendChild(card);
+    } else if (card.parentElement.id === "qualidade") {
+
+        if (quantidadeProduzida >= quantidadePedido) {
+            document.getElementById("fundicao").appendChild(card);
+        } else {
+            card.classList.add("red");
+            document.getElementById("pedidos").appendChild(card);
+            alert("Quantidade menor que o pedido. Voltou para reposição.");
+        }
+    }
+}
+</script>
+
+</body>
+</html>
